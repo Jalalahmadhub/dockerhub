@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Loan Approval — Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Loan Approval Demo</h1>
+    <form id="loanForm" onsubmit="event.preventDefault(); checkLoan();">
+      <label>
+        Applicant Name
+        <input id="name" type="text" placeholder="e.g. Ali Khan" required>
+      </label>
+
+      <label>
+        Monthly Income (USD)
+        <input id="income" type="number" min="0" placeholder="3000" required>
+      </label>
+
+      <label>
+        Loan Amount (USD)
+        <input id="loan" type="number" min="0" placeholder="10000" required>
+      </label>
+
+      <label>
+        Loan Term (months)
+        <input id="term" type="number" min="1" placeholder="24" required>
+      </label>
+
+      <button type="submit" class="btn">Check</button>
+      <p id="result" class="result" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script>
+    function checkLoan() {
+      const income = Number(document.getElementById('income').value);
+      const loan = Number(document.getElementById('loan').value);
+      const term = Number(document.getElementById('term').value);
+      const resultEl = document.getElementById('result');
+
+      // Very simple rule: monthly payment = loan/term; approve if payment <= 40% of monthly income
+      if (!income || !loan || !term) {
+        resultEl.textContent = 'Please fill all fields.';
+        return;
+      }
+      const monthly = loan / term;
+      const ratio = monthly / income;
+
+      if (ratio <= 0.4) {
+        resultEl.textContent = `✅ Likely approved — estimated monthly payment $${monthly.toFixed(2)} (${(ratio*100).toFixed(1)}% of income)`;
+        resultEl.className = 'result approved';
+      } else {
+        resultEl.textContent = `❌ Likely declined — estimated monthly payment $${monthly.toFixed(2)} (${(ratio*100).toFixed(1)}% of income)`;
+        resultEl.className = 'result declined';
+      }
+    }
+  </script>
+</body>
+</html>
